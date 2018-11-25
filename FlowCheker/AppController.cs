@@ -3,14 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FlowCheker
 {
     class AppController
     {
-        IForm form;
-        MeasurementSettings appSettings;
+        private IForm form;
+        private MeasurementSettings measurementSettings;
+        private MeasurementController measurementController;
 
         public AppController(IForm form)
         {
@@ -24,12 +26,55 @@ namespace FlowCheker
             form.StartEvent += Form_StartEvent;
             form.StopEvent += Form_StopEvent;
             form.SettingsUpdatedEvent += Form_SettingsUpdatedEvent;
-            form.Settings = appSettings;
+            form.AddEntryEvent += Form_AddEntryEvent;
+            form.RemoveEntryEvent += Form_RemoveEntryEvent;
+            measurementController = new MeasurementController(measurementSettings);
+            form.Settings = measurementSettings;
+        }
+
+        private int GetNewId()
+        {
+            List<MeasurementSettingsEntry> entries = measurementSettings.Entries;
+            int[] indexes = entries.Select(entry => entry.Id).ToArray();
+            Array.Sort(indexes);
+            int i = 0;
+            for (; i < indexes.Length - 1; i++)
+            {
+                if (i == indexes.Length - 1
+                    || indexes[i + 1] - indexes[i] > 1)
+                    return indexes[i] + 1;
+            }
+            return indexes[i] + 1;
+        }
+
+        private void LoadSettings()
+        {
+            var loader = new SettingsLoader<MeasurementSettings>();
+            measurementSettings = loader.Load(MeasurementSettings.SettingsFileName);
+        }
+
+        private void SaveSettings()
+        {
+            var loader = new SettingsLoader<MeasurementSettings>();
+            loader.Save(measurementSettings, MeasurementSettings.SettingsFileName);
+        }
+
+        private void Form_AddEntryEvent(object sender, EventArgs e)
+        {
+            measurementSettings.Entries.Add(new MeasurementSettingsEntry { Id = GetNewId(), Name = "Unknown", Selector = String.Empty, UpdateInterval = 0, Url = String.Empty });
+            form.Settings = measurementSettings;
+        }
+
+        private void Form_RemoveEntryEvent(object sender, RemoveEntryEventArgs e)
+        {
+            measurementSettings.Entries.RemoveAll(entry => entry.Id == e.Id);
+            form.Settings = measurementSettings;
         }
 
         private void Form_SettingsUpdatedEvent(object sender, SettingsEventArgs e)
         {
-            throw new NotImplementedException();
+            measurementSettings = e.Settings;
+            SaveSettings();
         }
 
         private void Form_StopEvent(object sender, EventArgs e)
@@ -37,24 +82,9 @@ namespace FlowCheker
             throw new NotImplementedException();
         }
 
-        private void LoadSettings()
-        {
-            var loader = new SettingsLoader<MeasurementSettings>();
-            appSettings = loader.Load(MeasurementSettings.SettingsFileName);
-
-            appSettings = new MeasurementSettings()
-            {
-                Entries = new List<MeasurementSettingsEntry>()
-                {
-                    { new MeasurementSettingsEntry() { Name = "assadf", Selector = "/tr/td/d", UpdateInterval = 5000, Url = "http://asd.ertw.df" } },
-                    { new MeasurementSettingsEntry() { Name = "azxccv", Selector = "/et/asd/{0}", UpdateInterval = 3000, Url = "https://aasdf.tryert.vc"} }
-                }
-            };
-        }
-
         private void Form_StartEvent(object sender, EventArgs e)
         {
-            
+            measurementController.Start();
         }
     }
 }

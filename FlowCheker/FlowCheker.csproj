@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.8.10.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.10\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -49,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Downloader.cs" />
     <Compile Include="Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,11 +61,16 @@
     </Compile>
     <Compile Include="AppController.cs" />
     <Compile Include="IForm.cs" />
+    <Compile Include="MeasurementController.cs" />
+    <Compile Include="MeasurementTimer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\ISettingsLoader.cs" />
     <Compile Include="Settings\MeasurementSettings.cs" />
     <Compile Include="Settings\MeasurementSettingsEntry.cs" />
+    <Compile Include="Settings\RemoveEntryEventArgs.cs" />
     <Compile Include="Settings\SettingsEventArgs.cs" />
     <Compile Include="Settings\SettingsLoader.cs" />
     <EmbeddedResource Include="Form.resx">

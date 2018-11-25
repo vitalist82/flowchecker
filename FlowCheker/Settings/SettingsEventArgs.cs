@@ -8,6 +8,11 @@ namespace FlowCheker.Settings
 {
     public class SettingsEventArgs : EventArgs
     {
-        public MeasurementSettings Settings { get; set; }
+        public MeasurementSettings Settings { get; }
+
+        public SettingsEventArgs(MeasurementSettings settings)
+        {
+            Settings = settings;
+        }
     }
 }

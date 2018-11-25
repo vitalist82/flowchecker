@@ -8,6 +8,7 @@ namespace FlowCheker.Settings
 {
     public class MeasurementSettingsEntry
     {
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Selector { get; set; }
         public string Name { get; set; }
@@ -17,11 +18,12 @@ namespace FlowCheker.Settings
         {
         }
 
-        public MeasurementSettingsEntry(string url, string selector, string name)
+        public MeasurementSettingsEntry(string url, string selector, string name, int updateInterval)
         {
             Url = url;
             Selector = selector;
             Name = name;
+            UpdateInterval = updateInterval;
         }
     }
 }

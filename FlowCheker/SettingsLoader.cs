@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using FlowCheker.Interface;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlowCheker.Settings
+namespace FlowCheker
 {
     public class SettingsLoader<T> : ISettingsLoader<T> where T : new()
     {

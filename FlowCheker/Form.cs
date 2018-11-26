@@ -1,4 +1,5 @@
-﻿using FlowCheker.Settings;
+﻿using FlowCheker.Interface;
+using FlowCheker.Model;
 using System;
 using System.Linq;
 using System.Windows.Forms;

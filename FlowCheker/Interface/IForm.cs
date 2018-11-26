@@ -1,7 +1,7 @@
-﻿using FlowCheker.Settings;
+﻿using FlowCheker.Model;
 using System;
 
-namespace FlowCheker
+namespace FlowCheker.Interface
 {
     interface IForm
     {

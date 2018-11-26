@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FlowCheker.Settings
+namespace FlowCheker.Model
 {
     public class MeasurementSettings
     {

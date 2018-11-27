@@ -14,15 +14,20 @@ namespace FlowCheker.Controller
         private Dictionary<int, MeasurementTimer> idsToTimers;
         private bool isRunning;
         private MeasurementSettings measurementSettings;
+        private Downloader downloader;
 
         public MeasurementController(MeasurementSettings measurementSettings)
         {
             this.measurementSettings = measurementSettings;
             this.idsToTimers = new Dictionary<int, MeasurementTimer>();
+            this.downloader = new Downloader();
         }
 
         public void Start()
         {
+            if (isRunning)
+                return;
+
             isRunning = true;
             foreach(MeasurementSettingsEntry entry in measurementSettings.Entries)
             {
@@ -30,6 +35,7 @@ namespace FlowCheker.Controller
                 if (!idsToTimers.ContainsKey(entry.Id))
                 {
                     timer = new MeasurementTimer(entry);
+                    timer.Interval = entry.UpdateInterval;
                     timer.Elapsed += Timer_Elapsed;
                     idsToTimers[entry.Id] = timer;
                 }
@@ -49,6 +55,8 @@ namespace FlowCheker.Controller
             try
             {
                 Console.WriteLine(settingsEntry.Name);
+                string[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
+                foreach (string line in lines) Console.WriteLine(line);
             }
             catch (Exception ex)
             {

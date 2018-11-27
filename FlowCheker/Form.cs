@@ -71,6 +71,11 @@ namespace FlowCheker
             StartEvent?.Invoke(this, e);
         }
 
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopEvent?.Invoke(this, e);
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddEntryEvent?.Invoke(this, e);
@@ -94,6 +99,6 @@ namespace FlowCheker
             Application.Exit();
         }
 
-        #endregion Event Handlers
+        #endregion Event Handlers        
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace FlowCheker.Interface
 {
-    interface IForm
+    public interface IForm
     {
         MeasurementSettings Settings { get; set; }
         event EventHandler StartEvent;

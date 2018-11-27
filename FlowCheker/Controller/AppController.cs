@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 
 namespace FlowCheker.Controller
 {
-    class AppController
+    // TODO: what is responsibility of this class? should it be SettingsController? should it be split to multiple classes?
+    public class AppController
     {
+        public const string SettingsFileName = "settings.json";
+
         private IForm form;
         private MeasurementSettings measurementSettings;
         private MeasurementController measurementController;
@@ -24,13 +27,18 @@ namespace FlowCheker.Controller
         public void Init()
         {
             LoadSettings();
+            BindEvents();
+            measurementController = new MeasurementController(measurementSettings);
+            form.Settings = measurementSettings;
+        }
+
+        private void BindEvents()
+        {
             form.StartEvent += Form_StartEvent;
             form.StopEvent += Form_StopEvent;
             form.SettingsUpdatedEvent += Form_SettingsUpdatedEvent;
             form.AddEntryEvent += Form_AddEntryEvent;
             form.RemoveEntryEvent += Form_RemoveEntryEvent;
-            measurementController = new MeasurementController(measurementSettings);
-            form.Settings = measurementSettings;
         }
 
         private int GetNewId()
@@ -51,13 +59,13 @@ namespace FlowCheker.Controller
         private void LoadSettings()
         {
             var loader = new SettingsLoader<MeasurementSettings>();
-            measurementSettings = loader.Load(MeasurementSettings.SettingsFileName);
+            measurementSettings = loader.Load(SettingsFileName);
         }
 
         private void SaveSettings()
         {
             var loader = new SettingsLoader<MeasurementSettings>();
-            loader.Save(measurementSettings, MeasurementSettings.SettingsFileName);
+            loader.Save(measurementSettings, SettingsFileName);
         }
 
         private void Form_AddEntryEvent(object sender, EventArgs e)
@@ -80,7 +88,7 @@ namespace FlowCheker.Controller
 
         private void Form_StopEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            measurementController.Stop();
         }
 
         private void Form_StartEvent(object sender, EventArgs e)

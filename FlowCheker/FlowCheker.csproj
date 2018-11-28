@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Downloader.cs" />
+    <Compile Include="ExcelWriter.cs" />
     <Compile Include="Interface\IResultWriter.cs" />
     <Compile Include="Controller\ResultWriterController.cs" />
     <Compile Include="Form.cs">

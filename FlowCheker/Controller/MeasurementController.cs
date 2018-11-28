@@ -1,4 +1,5 @@
 ﻿using FlowChecker;
+using FlowCheker.Interface;
 using FlowCheker.Model;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,15 @@ namespace FlowCheker.Controller
         private bool isRunning;
         private MeasurementSettings measurementSettings;
         private Downloader downloader;
+        private ResultWriterController<ExcelWriter> writer;
 
         public MeasurementController(MeasurementSettings measurementSettings)
         {
             this.measurementSettings = measurementSettings;
             this.idsToTimers = new Dictionary<int, MeasurementTimer>();
             this.downloader = new Downloader();
+            this.writer = new ResultWriterController<ExcelWriter>(new ExcelWriter("C:\\Work\\temp\\output.xlsx"), 3000);
+            this.writer.Start();
         }
 
         public void Start()
@@ -47,6 +51,7 @@ namespace FlowCheker.Controller
         {
             foreach(int id in idsToTimers.Keys)
                 idsToTimers[id].Stop();
+            this.writer.Stop();
             isRunning = false;
         }
 
@@ -56,7 +61,8 @@ namespace FlowCheker.Controller
             {
                 Console.WriteLine(settingsEntry.Name);
                 string[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
-                foreach (string line in lines) Console.WriteLine(line);
+                foreach (string line in lines)
+                    writer.AddToQueue(new MeasurementResult(settingsEntry.Name, line.Split(';').ToList<dynamic>(), DateTime.Now));
             }
             catch (Exception ex)
             {

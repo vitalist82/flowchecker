@@ -96,6 +96,7 @@ namespace FlowCheker
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // TODO: exit properly
             Application.Exit();
         }
 

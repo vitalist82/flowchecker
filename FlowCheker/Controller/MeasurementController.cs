@@ -12,19 +12,20 @@ namespace FlowCheker.Controller
 {
     public class MeasurementController
     {
-        private Dictionary<int, MeasurementTimer> idsToTimers;
+        private static string outputFilePath = "C:\\Work\\temp\\output.xlsx";
+        private static int writerInterval = 3000;
+
         private bool isRunning;
+        private Dictionary<int, MeasurementTimer> idsToTimers;
         private MeasurementSettings measurementSettings;
         private Downloader downloader;
-        private ResultWriterController<ExcelWriter> writer;
+        private ResultWriterController<ExcelWriter> writerController;
 
         public MeasurementController(MeasurementSettings measurementSettings)
         {
             this.measurementSettings = measurementSettings;
             this.idsToTimers = new Dictionary<int, MeasurementTimer>();
             this.downloader = new Downloader();
-            this.writer = new ResultWriterController<ExcelWriter>(new ExcelWriter("C:\\Work\\temp\\output.xlsx"), 3000);
-            this.writer.Start();
         }
 
         public void Start()
@@ -32,27 +33,33 @@ namespace FlowCheker.Controller
             if (isRunning)
                 return;
 
+            writerController = new ResultWriterController<ExcelWriter>(new ExcelWriter(outputFilePath), writerInterval);
+            writerController.Start();
+
             isRunning = true;
             foreach(MeasurementSettingsEntry entry in measurementSettings.Entries)
             {
-                MeasurementTimer timer = null;
                 if (!idsToTimers.ContainsKey(entry.Id))
-                {
-                    timer = new MeasurementTimer(entry);
-                    timer.Interval = entry.UpdateInterval;
-                    timer.Elapsed += Timer_Elapsed;
-                    idsToTimers[entry.Id] = timer;
-                }
-                idsToTimers[entry.Id].Start();
+                    CreateMeasurementTimer(entry);
+                idsToTimers[entry.Id]?.Start();
             }
         }
 
         public void Stop()
         {
             foreach(int id in idsToTimers.Keys)
-                idsToTimers[id].Stop();
-            this.writer.Stop();
+                idsToTimers[id]?.Stop();
+
+            writerController?.Stop();
             isRunning = false;
+        }
+
+        private void CreateMeasurementTimer(MeasurementSettingsEntry entry)
+        {
+            var timer = new MeasurementTimer(entry);
+            timer.Interval = entry.UpdateInterval;
+            timer.Elapsed += Timer_Elapsed;
+            idsToTimers[entry.Id] = timer;
         }
 
         private async void CheckState(MeasurementSettingsEntry settingsEntry)
@@ -62,7 +69,7 @@ namespace FlowCheker.Controller
                 Console.WriteLine(settingsEntry.Name);
                 string[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
                 foreach (string line in lines)
-                    writer.AddToQueue(new MeasurementResult(settingsEntry.Name, line.Split(';').ToList<dynamic>(), DateTime.Now));
+                    writerController.AddToQueue(new MeasurementResult(settingsEntry.Name, line.Split(';').ToList<dynamic>(), DateTime.Now));
             }
             catch (Exception ex)
             {

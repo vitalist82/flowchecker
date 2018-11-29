@@ -11,10 +11,10 @@ namespace FlowCheker.Controller
 {
     public class ResultWriterController<T> where T : IResultWriter
     {
+        private bool isTimerRunning;
         private T resultWriter;
         private Queue<MeasurementResult> resultQueue;
         private Timer timer;
-        private bool isTimerRunning;
 
         public ResultWriterController(T resultWriter, double timeout)
         {
@@ -36,6 +36,8 @@ namespace FlowCheker.Controller
         public void Stop()
         {
             timer.Stop();
+            timer.Dispose();
+            resultWriter.Dispose();
             isTimerRunning = false;
         }
 

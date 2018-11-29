@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FlowCheker
 {
-    public class ExcelWriter : IResultWriter, IDisposable
+    public class ExcelWriter : IResultWriter
     {
         private ExcelPackage excel;
 
@@ -31,8 +31,10 @@ namespace FlowCheker
             var ws = excel.Workbook.Worksheets.FirstOrDefault(worksheet => worksheet.Name == name);
             if (ws == null)
                 ws = excel.Workbook.Worksheets.Add(name);
-            int rowIndex = ws.Dimension != null ? ws.Dimension.End.Row : 0;
-            ws.Cells[rowIndex + 1, 1].LoadFromCollection<string>(result.Values.Select(item => item as string));
+            int rowIndex = ws.Dimension != null ? ws.Dimension.End.Row + 1 : 1;
+
+            for (int i = 1; i <= result.Values.Count; i++)
+                ws.Cells[rowIndex, i].Value = result.Values[i-1];
             excel.Save();
         }
 

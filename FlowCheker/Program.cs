@@ -18,7 +18,7 @@ namespace FlowCheker
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form mainForm = new Form();
-            AppController controller = new AppController(mainForm);
+            MainController controller = new MainController(mainForm);
             Application.Run(mainForm);
         }
     }

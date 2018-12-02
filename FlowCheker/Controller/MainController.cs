@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace FlowCheker.Controller
 {
     // TODO: what is responsibility of this class? should it be SettingsController? should it be split to multiple classes?
-    // TODO: propagate settings changes to MeasurementController
     public class MainController
     {
-        public const string SettingsFileName = "settings.json";
+        private const string settingsFileName = "settings.json";
+        private const string outputFilePath = "output.xlsx";
 
         private IForm form;
         private MeasurementSettings measurementSettings;
@@ -60,13 +60,15 @@ namespace FlowCheker.Controller
         private void LoadSettings()
         {
             var loader = new SettingsLoader<MeasurementSettings>();
-            measurementSettings = loader.Load(SettingsFileName);
+            measurementSettings = loader.Load(settingsFileName);
+            if (measurementSettings.OutputFile == null)
+                measurementSettings.OutputFile = outputFilePath;
         }
 
         private void SaveSettings()
         {
             var loader = new SettingsLoader<MeasurementSettings>();
-            loader.Save(measurementSettings, SettingsFileName);
+            loader.Save(measurementSettings, settingsFileName);
         }
 
         private void Form_AddEntryEvent(object sender, EventArgs e)

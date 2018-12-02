@@ -12,7 +12,6 @@ namespace FlowCheker.Controller
 {
     public class MeasurementController
     {
-        private static string outputFilePath = "C:\\Work\\temp\\output.xlsx";
         private static int writerInterval = 3000;
 
         private bool isRunning;
@@ -33,7 +32,7 @@ namespace FlowCheker.Controller
             if (isRunning)
                 return;
 
-            writerController = new ResultWriterController<ExcelWriter>(new ExcelWriter(outputFilePath), writerInterval);
+            writerController = new ResultWriterController<ExcelWriter>(new ExcelWriter(measurementSettings.OutputFile), writerInterval);
             writerController.Start();
 
             isRunning = true;
@@ -67,6 +66,7 @@ namespace FlowCheker.Controller
             try
             {
                 Console.WriteLine(settingsEntry.Name);
+                Console.WriteLine(settingsEntry.UpdateInterval);
                 string[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
                 foreach (string line in lines)
                     writerController.AddToQueue(new MeasurementResult(settingsEntry.Name, line.Split(';').ToList<dynamic>(), DateTime.Now));

@@ -64,6 +64,7 @@ namespace FlowCheker
             tbUrl.DataBindings.Add("Text", bindingSource, "Url", true, DataSourceUpdateMode.OnPropertyChanged);
             tbSelector.DataBindings.Add("Text", bindingSource, "Selector", true, DataSourceUpdateMode.OnPropertyChanged);
             tbInterval.DataBindings.Add("Text", bindingSource, "UpdateInterval", true, DataSourceUpdateMode.OnPropertyChanged);
+            tbOutputFile.DataBindings.Add("Text", bindingSource, "OutputFile", true, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
@@ -101,5 +102,19 @@ namespace FlowCheker
         }
 
         #endregion Event Handlers        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.CheckFileExists = false;
+                ofd.Title = "Select output file";
+                ofd.Filter = "CSV files|*.csv";
+                if (ofd.ShowDialog(this) == DialogResult.OK)
+                {
+                    tbOutputFile.Text = ofd.FileName;
+                }
+            }
+        }
     }
 }

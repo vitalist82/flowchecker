@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvWriter.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="ExcelWriter.cs" />
     <Compile Include="Interface\IResultWriter.cs" />

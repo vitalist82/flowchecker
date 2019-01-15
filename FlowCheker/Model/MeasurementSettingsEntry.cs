@@ -13,17 +13,19 @@ namespace FlowCheker.Model
         public string Selector { get; set; }
         public string Name { get; set; }
         public int UpdateInterval { get; set; }
+        public string OutputFile { get; set; }
 
         public MeasurementSettingsEntry()
         {
         }
 
-        public MeasurementSettingsEntry(string url, string selector, string name, int updateInterval)
+        public MeasurementSettingsEntry(string url, string selector, string name, int updateInterval, string outputFile)
         {
             Url = url;
             Selector = selector;
             Name = name;
             UpdateInterval = updateInterval;
+            OutputFile = outputFile;
         }
     }
 }

@@ -37,7 +37,6 @@ namespace FlowCheker.Controller
         {
             timer.Stop();
             timer.Dispose();
-            resultWriter.Dispose();
             isTimerRunning = false;
         }
 

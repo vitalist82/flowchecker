@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlowCheker.Interface
 {
-    public interface IResultWriter : IDisposable
+    public interface IResultWriter
     {
         void Write(MeasurementResult result);
     }

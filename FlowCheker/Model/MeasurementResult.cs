@@ -9,12 +9,12 @@ namespace FlowCheker.Model
     public class MeasurementResult
     {
         public DateTime Timestamp { get; set; }
-        public string Name { get; set; }
+        public MeasurementSettingsEntry Settings { get; set; }
         public List<dynamic> Values { get; set; }
 
-        public MeasurementResult(string name, List<dynamic> values, DateTime timestamp)
+        public MeasurementResult(MeasurementSettingsEntry settings, List<dynamic> values, DateTime timestamp)
         {
-            Name = name;
+            Settings = settings;
             Values = values;
             Timestamp = timestamp;
         }

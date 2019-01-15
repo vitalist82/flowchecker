@@ -18,7 +18,7 @@ namespace FlowCheker.Controller
         private Dictionary<int, MeasurementTimer> idsToTimers;
         private MeasurementSettings measurementSettings;
         private Downloader downloader;
-        private ResultWriterController<ExcelWriter> writerController;
+        private ResultWriterController<CsvWriter> writerController;
 
         public MeasurementController(MeasurementSettings measurementSettings)
         {
@@ -32,15 +32,15 @@ namespace FlowCheker.Controller
             if (isRunning)
                 return;
 
-            writerController = new ResultWriterController<ExcelWriter>(new ExcelWriter(measurementSettings.OutputFile), writerInterval);
+            writerController = new ResultWriterController<CsvWriter>(new CsvWriter(), writerInterval);
             writerController.Start();
 
             isRunning = true;
             foreach(MeasurementSettingsEntry entry in measurementSettings.Entries)
             {
-                if (!idsToTimers.ContainsKey(entry.Id))
-                    CreateMeasurementTimer(entry);
-                idsToTimers[entry.Id]?.Start();
+                var timer = !idsToTimers.ContainsKey(entry.Id) ?
+                    CreateMeasurementTimer(entry) : idsToTimers[entry.Id];
+                timer.Start();
             }
         }
 
@@ -53,23 +53,22 @@ namespace FlowCheker.Controller
             isRunning = false;
         }
 
-        private void CreateMeasurementTimer(MeasurementSettingsEntry entry)
+        private Timer CreateMeasurementTimer(MeasurementSettingsEntry entry)
         {
             var timer = new MeasurementTimer(entry);
             timer.Interval = entry.UpdateInterval;
             timer.Elapsed += Timer_Elapsed;
             idsToTimers[entry.Id] = timer;
+            return timer;
         }
 
         private async void CheckState(MeasurementSettingsEntry settingsEntry)
         {
             try
             {
-                Console.WriteLine(settingsEntry.Name);
-                Console.WriteLine(settingsEntry.UpdateInterval);
-                string[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
-                foreach (string line in lines)
-                    writerController.AddToQueue(new MeasurementResult(settingsEntry.Name, line.Split(';').ToList<dynamic>(), DateTime.Now));
+                List<dynamic>[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
+                foreach (List<dynamic> line in lines)
+                    writerController.AddToQueue(new MeasurementResult(settingsEntry, line, DateTime.Now));
             }
             catch (Exception ex)
             {

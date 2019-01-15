@@ -16,32 +16,32 @@ namespace FlowChecker
         {
         }
 
-        public async Task<string> GetLastRow(string url, string rowSelector)
+        public async Task<List<dynamic>> GetLastRow(string url, string rowSelector)
         {
             try
             {
                 HtmlDocument doc = await LoadHtmlDocument(url);
                 HtmlNode tableRow = doc.DocumentNode.SelectSingleNode(rowSelector);
 
-                return GetCsvLineFromRow(tableRow);
+                return GetLineFromRow(tableRow);
             }
             catch (Exception ex)
             {
-                return String.Empty;
+                return new List<dynamic>(0);
             }
         }
 
-        public async Task<string[]> GetLastRows(string url, string rowsSelector)
+        public async Task<List<dynamic>[]> GetLastRows(string url, string rowsSelector)
         {
             try
             {
                 HtmlDocument doc = await LoadHtmlDocument(url);
                 HtmlNodeCollection tableRows = doc.DocumentNode.SelectNodes(rowsSelector);
-                return tableRows.Select(row => GetCsvLineFromRow(row)).ToArray();
+                return tableRows.Select(row => GetLineFromRow(row)).ToArray();
             }
             catch (Exception ex)
             {
-                return new string[] { };
+                return new List<dynamic>[] { };
             }
         }
 
@@ -57,19 +57,14 @@ namespace FlowChecker
             return doc;
         }
 
-        private string GetCsvLineFromRow(HtmlNode row)
+        private List<dynamic> GetLineFromRow(HtmlNode row)
         {
-            StringBuilder str = new StringBuilder();
-            foreach(HtmlNode col in row.ChildNodes)
-            {
+            List<dynamic> result = new List<dynamic>();
+            foreach (HtmlNode col in row.ChildNodes)
                 if (col.InnerText.Trim() != "")
-                {
-                    str.Append(col.InnerText.Trim());
-                    str.Append(';');
-                }
-            }
-            str.Remove(str.Length - 1, 1);
-            return str.ToString().Trim(new[] {';'});
+                    result.Add(col.InnerText.Trim());
+
+            return result;
         }
     }
 }

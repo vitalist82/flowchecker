@@ -29,7 +29,7 @@ namespace FlowCheker
 
         public void Write(MeasurementResult result)
         {
-            string name = GetNormalizedName(result.Name);
+            string name = GetNormalizedName(result.Settings.Name);
             DateTime resultTime = DateTime.Parse(result.Values[0]);
             if (lastTimestamps.ContainsKey(name) && lastTimestamps[name] >= resultTime)
                 return;

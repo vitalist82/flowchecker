@@ -13,7 +13,6 @@ namespace FlowCheker.Controller
     public class MainController
     {
         private const string settingsFileName = "settings.json";
-        private const string outputFilePath = "output.xlsx";
 
         private IForm form;
         private MeasurementSettings measurementSettings;
@@ -22,6 +21,7 @@ namespace FlowCheker.Controller
         public MainController(IForm form)
         {
             this.form = form;
+            Logger.Init(new LogDelegate(form.AppendMessage), LogLevel.Info);
             Init();
         }
 
@@ -58,10 +58,9 @@ namespace FlowCheker.Controller
 
         private void LoadSettings()
         {
+            Logger.Log(LogLevel.Debug, "Loading settings...");
             var loader = new SettingsLoader<MeasurementSettings>();
             measurementSettings = loader.Load(settingsFileName);
-            if (measurementSettings.OutputFile == null)
-                measurementSettings.OutputFile = outputFilePath;
         }
 
         private void SaveSettings()

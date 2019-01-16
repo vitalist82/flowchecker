@@ -29,15 +29,21 @@ namespace FlowCheker.Controller
 
         public void Start()
         {
+            Logger.Log(LogLevel.Info, "Periodical checks for all entries started.");
             if (isRunning)
+            {
+                Logger.Log(LogLevel.Info, "Checking in progress. Skipping.");
                 return;
+            }
 
+            Logger.Log(LogLevel.Debug, "Starting ResultWriterController.");
             writerController = new ResultWriterController<CsvWriter>(new CsvWriter(), writerInterval);
             writerController.Start();
 
             isRunning = true;
             foreach(MeasurementSettingsEntry entry in measurementSettings.Entries)
             {
+                Logger.Log(LogLevel.Debug, "Starting timer for " + entry.Name);
                 var timer = !idsToTimers.ContainsKey(entry.Id) ?
                     CreateMeasurementTimer(entry) : idsToTimers[entry.Id];
                 timer.Start();
@@ -46,9 +52,11 @@ namespace FlowCheker.Controller
 
         public void Stop()
         {
+            Logger.Log(LogLevel.Info, "Stopping all checks.");
             foreach(int id in idsToTimers.Keys)
                 idsToTimers[id]?.Stop();
 
+            Logger.Log(LogLevel.Debug, "Stopping writer controller.");
             writerController?.Stop();
             isRunning = false;
         }
@@ -64,17 +72,23 @@ namespace FlowCheker.Controller
 
         private async void CheckState(MeasurementSettingsEntry settingsEntry)
         {
+            Logger.Log(LogLevel.Info, "Checking state of '" + settingsEntry.Name + "'");
             try
             {
                 List<dynamic>[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
                 foreach (List<dynamic> line in lines)
+                {
+                    Logger.Log(LogLevel.Debug, "Adding line to writer controller.");
                     writerController.AddToQueue(new MeasurementResult(settingsEntry, line, DateTime.Now));
+                }
             }
             catch (Exception ex)
             {
+                Logger.Log(LogLevel.Error, "CheckState failed with an exception: " + ex.Message);
             }
             finally
             {
+                Logger.Log(LogLevel.Info, "CheckState of '" + settingsEntry.Name + "' finished.");
             }
         }
 

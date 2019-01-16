@@ -72,6 +72,8 @@
     <Compile Include="Controller\MainController.cs" />
     <Compile Include="Interface\IForm.cs" />
     <Compile Include="Controller\MeasurementController.cs" />
+    <Compile Include="ISynchronizeInvokeExtensions.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Model\MeasurementResult.cs" />
     <Compile Include="MeasurementTimer.cs">
       <SubType>Component</SubType>

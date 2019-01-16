@@ -37,7 +37,7 @@
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBoxLog = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.tbOutputFile = new System.Windows.Forms.TextBox();
@@ -169,7 +169,7 @@
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.textBox3);
+            this.panel4.Controls.Add(this.textBoxLog);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 230);
             this.panel4.Margin = new System.Windows.Forms.Padding(4);
@@ -178,16 +178,16 @@
             this.panel4.Size = new System.Drawing.Size(834, 346);
             this.panel4.TabIndex = 9;
             // 
-            // textBox3
+            // textBoxLog
             // 
-            this.textBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox3.Location = new System.Drawing.Point(7, 6);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox3.Size = new System.Drawing.Size(820, 334);
-            this.textBox3.TabIndex = 7;
+            this.textBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxLog.Location = new System.Drawing.Point(7, 6);
+            this.textBoxLog.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxLog.Multiline = true;
+            this.textBoxLog.Name = "textBoxLog";
+            this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxLog.Size = new System.Drawing.Size(820, 334);
+            this.textBoxLog.TabIndex = 7;
             // 
             // panel3
             // 
@@ -425,7 +425,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox textBoxLog;
         private System.Windows.Forms.TextBox tbName;
         private System.Windows.Forms.TextBox tbSelector;
         private System.Windows.Forms.TextBox tbUrl;

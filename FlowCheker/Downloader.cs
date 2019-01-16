@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using FlowCheker;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FlowChecker
 {
-    class Downloader
+    public class Downloader
     {
         public Downloader()
         {
@@ -33,14 +34,17 @@ namespace FlowChecker
 
         public async Task<List<dynamic>[]> GetLastRows(string url, string rowsSelector)
         {
+            Logger.Log(LogLevel.Debug, "Getting data from " + url);
             try
             {
                 HtmlDocument doc = await LoadHtmlDocument(url);
                 HtmlNodeCollection tableRows = doc.DocumentNode.SelectNodes(rowsSelector);
+                Logger.Log(LogLevel.Debug, "Finished downloading data from " + url);
                 return tableRows.Select(row => GetLineFromRow(row)).ToArray();
             }
             catch (Exception ex)
             {
+                Logger.Log(LogLevel.Error, "GetLastRows failed with an exception: " + ex.Message);
                 return new List<dynamic>[] { };
             }
         }

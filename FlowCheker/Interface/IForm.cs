@@ -6,6 +6,7 @@ namespace FlowCheker.Interface
     public interface IForm
     {
         MeasurementSettings Settings { get; set; }
+        void AppendMessage(string message);
         event EventHandler StartEvent;
         event EventHandler StopEvent;
         event EventHandler AddEntryEvent;

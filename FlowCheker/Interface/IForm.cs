@@ -7,6 +7,7 @@ namespace FlowCheker.Interface
     {
         MeasurementSettings Settings { get; set; }
         void AppendMessage(string message);
+        void SetStatusMessage(string message);
         event EventHandler StartEvent;
         event EventHandler StopEvent;
         event EventHandler AddEntryEvent;

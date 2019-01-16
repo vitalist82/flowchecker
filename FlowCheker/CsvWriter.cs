@@ -11,18 +11,20 @@ namespace FlowCheker
 {
     public class CsvWriter : IResultWriter
     {
+        public CsvWriter()
+        {
+        }
+
         public void Write(MeasurementResult result)
         {
+            long lastTimestamp = ReadLastTimestamp(result.Settings.OutputFile);
+            long resultTime = DateTime.Parse(result.Values[0]).ToFileTimeUtc();
+            if (resultTime <= lastTimestamp)
+                return;
+
+            string currentContent = GetCurrentContent(result.Settings.OutputFile);
             using (FileStream fs = new FileStream(result.Settings.OutputFile, FileMode.OpenOrCreate))
             {
-                long lastTimestamp = ReadLastTimestamp(fs);
-                string currentContent = GetFileContent(fs);
-
-                long resultTime = DateTime.Parse(result.Values[0]).ToFileTimeUtc();
-
-                if (resultTime <= lastTimestamp)
-                    return;
-
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
                     string line = String.Join(";", result.Values);
@@ -31,34 +33,40 @@ namespace FlowCheker
                     if (currentContent != String.Empty)
                         sw.WriteLine(currentContent);
                 }
-
-                lastTimestamp = resultTime;
             }
         }
 
-        private string GetFileContent(FileStream fs)
+        private string GetCurrentContent(string filePath)
         {
-            if (fs.Length == 0)
+            try
+            {
+                return File.ReadAllText(filePath);
+            }
+            catch
+            {
                 return String.Empty;
-
-            StreamReader sr = new StreamReader(fs);
-            return sr.ReadToEnd();
+            }
         }
 
-        private long ReadLastTimestamp(FileStream stream)
+        private long ReadLastTimestamp(string filePath)
         {
-            if (stream.Length == 0)
+            if (filePath == null || !File.Exists(filePath))
                 return 0;
 
             try
             {
-                string line = null;
-                StreamReader sr = new StreamReader(stream);
-                while ((line = sr.ReadLine()) != null) ;
-                return line != null ? DateTime.Parse(line.Split(';')[0]).ToFileTimeUtc() : 0;
+                using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string line = sr.ReadLine();
+                        return line != null ? DateTime.Parse(line.Split(';')[0]).ToFileTimeUtc() : 0;
+                    }
+                }
             }
             catch(Exception ex)
             {
+                Logger.Log(LogLevel.Error, "ReadLastTimestamp failed with an exception: " + ex.Message);
                 return 0;
             }
         }

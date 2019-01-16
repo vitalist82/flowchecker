@@ -12,12 +12,14 @@ namespace FlowCheker.Controller
     public class ResultWriterController<T> where T : IResultWriter
     {
         private bool isTimerRunning;
+        private StatusModel statusModel;
         private T resultWriter;
         private Queue<MeasurementResult> resultQueue;
         private Timer timer;
 
-        public ResultWriterController(T resultWriter, double timeout)
+        public ResultWriterController(T resultWriter, double timeout, StatusModel statusModel)
         {
+            this.statusModel = statusModel;
             this.resultWriter = resultWriter;
             resultQueue = new Queue<MeasurementResult>();
             timer = new Timer(timeout);
@@ -51,6 +53,7 @@ namespace FlowCheker.Controller
             while(resultQueue.Count > 0)
             {
                 MeasurementResult result = resultQueue.Dequeue();
+                statusModel.StatusMessage = String.Join(";", result.Values);
                 resultWriter.Write(result);
             }
         }

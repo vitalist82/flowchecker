@@ -21,15 +21,17 @@ namespace FlowCheker.Controller
         public MainController(IForm form)
         {
             this.form = form;
-            Logger.Init(new LogDelegate(form.AppendMessage), LogLevel.Info);
             Init();
         }
 
         public void Init()
         {
+            Logger.Init(form.AppendMessage, LogLevel.Debug);
             LoadSettings();
             BindEvents();
-            measurementController = new MeasurementController(measurementSettings);
+            StatusModel statusModel = new StatusModel();
+            statusModel.StatusMessageChanged += StatusModel_StatusMessageChanged;
+            measurementController = new MeasurementController(measurementSettings, statusModel);
             form.Settings = measurementSettings;
         }
 
@@ -48,11 +50,10 @@ namespace FlowCheker.Controller
             int[] indexes = entries.Select(entry => entry.Id).ToArray();
             Array.Sort(indexes);
             int i = 0;
-            for (; i < indexes.Length - 1; i++)
-            {
+            while (i++ < indexes.Length - 1)
                 if (i == indexes.Length - 1 || indexes[i + 1] - indexes[i] > 1)
                     return indexes[i] + 1;
-            }
+
             return indexes[i] + 1;
         }
 
@@ -65,8 +66,10 @@ namespace FlowCheker.Controller
 
         private void SaveSettings()
         {
+            Logger.Log(LogLevel.Debug, "Saving settings...");
             var loader = new SettingsLoader<MeasurementSettings>();
             loader.Save(measurementSettings, settingsFileName);
+            Logger.Log(LogLevel.Debug, "Settings saved.");
         }
 
         private void Form_AddEntryEvent(object sender, EventArgs e)
@@ -96,6 +99,11 @@ namespace FlowCheker.Controller
         private void Form_StartEvent(object sender, EventArgs e)
         {
             measurementController.Start();
+        }
+
+        private void StatusModel_StatusMessageChanged(object sender, StatusMessageEventArgs e)
+        {
+            form.SetStatusMessage(e.StatusMessage);
         }
     }
 }

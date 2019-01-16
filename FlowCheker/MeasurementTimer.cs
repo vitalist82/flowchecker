@@ -10,9 +10,9 @@ namespace FlowCheker
 {
     public class MeasurementTimer : Timer
     {
-        private MeasurementSettingsEntry measurementSettingsEntry;
+        public MeasurementSettingsEntry MeasurementSettingsEntry { get { return measurementSettingsEntry; } }
 
-        public MeasurementSettingsEntry MeasurementSettingsEntry {  get { return measurementSettingsEntry;  } }
+        private MeasurementSettingsEntry measurementSettingsEntry;
 
         public MeasurementTimer(MeasurementSettingsEntry measurementSettingsEntry) : base()
         {

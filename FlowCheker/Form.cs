@@ -34,6 +34,11 @@ namespace FlowCheker
             InitializeComponent();
         }
 
+        public void SetStatusMessage(string message)
+        {
+            this.InvokeEx(f => f.toolStripStatusLabel1.Text = message);
+        }
+
         public void AppendMessage(string message)
         {
             StringBuilder sb = new StringBuilder();

@@ -78,6 +78,7 @@
     <Compile Include="MeasurementTimer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Model\StatusModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interface\ISettingsLoader.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="RemoveEntryEventArgs.cs" />
     <Compile Include="SettingsEventArgs.cs" />
     <Compile Include="SettingsLoader.cs" />
+    <Compile Include="StatusMessageEventArgs.cs" />
     <EmbeddedResource Include="Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>

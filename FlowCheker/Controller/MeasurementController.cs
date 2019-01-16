@@ -19,12 +19,14 @@ namespace FlowCheker.Controller
         private MeasurementSettings measurementSettings;
         private Downloader downloader;
         private ResultWriterController<CsvWriter> writerController;
+        private StatusModel statusModel;
 
-        public MeasurementController(MeasurementSettings measurementSettings)
+        public MeasurementController(MeasurementSettings measurementSettings, StatusModel statusModel)
         {
             this.measurementSettings = measurementSettings;
             this.idsToTimers = new Dictionary<int, MeasurementTimer>();
             this.downloader = new Downloader();
+            this.statusModel = statusModel;
         }
 
         public void Start()
@@ -37,10 +39,11 @@ namespace FlowCheker.Controller
             }
 
             Logger.Log(LogLevel.Debug, "Starting ResultWriterController.");
-            writerController = new ResultWriterController<CsvWriter>(new CsvWriter(), writerInterval);
+            writerController = new ResultWriterController<CsvWriter>(new CsvWriter(), writerInterval, statusModel);
             writerController.Start();
 
             isRunning = true;
+            statusModel.StatusMessage = "Checking in progress...";
             foreach(MeasurementSettingsEntry entry in measurementSettings.Entries)
             {
                 Logger.Log(LogLevel.Debug, "Starting timer for " + entry.Name);
@@ -59,6 +62,7 @@ namespace FlowCheker.Controller
             Logger.Log(LogLevel.Debug, "Stopping writer controller.");
             writerController?.Stop();
             isRunning = false;
+            statusModel.StatusMessage = "Idle";
         }
 
         private Timer CreateMeasurementTimer(MeasurementSettingsEntry entry)
@@ -72,7 +76,10 @@ namespace FlowCheker.Controller
 
         private async void CheckState(MeasurementSettingsEntry settingsEntry)
         {
-            Logger.Log(LogLevel.Info, "Checking state of '" + settingsEntry.Name + "'");
+            string statusMessage = "Checking state of '" + settingsEntry.Name + "'";
+            Logger.Log(LogLevel.Info, statusMessage);
+            statusModel.StatusMessage = statusMessage;
+
             try
             {
                 List<dynamic>[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);

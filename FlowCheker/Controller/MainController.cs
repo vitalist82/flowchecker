@@ -75,7 +75,7 @@ namespace FlowCheker.Controller
         private void Form_AddEntryEvent(object sender, EventArgs e)
         {
             measurementSettings.Entries.Add(new MeasurementSettingsEntry { Id = GetNewId(), Name = "Unknown",
-                Selector = String.Empty, UpdateInterval = 0, Url = String.Empty, OutputFile = String.Empty });
+                Selector = String.Empty, UpdateInterval = 60000, Url = String.Empty, OutputFile = String.Empty });
             form.Settings = measurementSettings;
         }
 

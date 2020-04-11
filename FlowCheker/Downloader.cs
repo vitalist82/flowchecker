@@ -17,7 +17,7 @@ namespace FlowChecker
         {
         }
 
-        public async Task<List<dynamic>> GetLastRow(string url, string rowSelector)
+        public async Task<List<string>> GetLastRow(string url, string rowSelector)
         {
             try
             {
@@ -28,11 +28,11 @@ namespace FlowChecker
             }
             catch (Exception ex)
             {
-                return new List<dynamic>(0);
+                return new List<string>(0);
             }
         }
 
-        public async Task<List<dynamic>[]> GetLastRows(string url, string rowsSelector)
+        public async Task<List<string>[]> GetLastRows(string url, string rowsSelector)
         {
             Logger.Log(LogLevel.Debug, "Getting data from " + url);
             try
@@ -45,7 +45,7 @@ namespace FlowChecker
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, "GetLastRows failed with an exception: " + ex.Message);
-                return new List<dynamic>[] { };
+                return new List<string>[] { };
             }
         }
 
@@ -61,9 +61,9 @@ namespace FlowChecker
             return doc;
         }
 
-        private List<dynamic> GetLineFromRow(HtmlNode row)
+        private List<string> GetLineFromRow(HtmlNode row)
         {
-            List<dynamic> result = new List<dynamic>();
+            List<string> result = new List<string>();
             foreach (HtmlNode col in row.ChildNodes)
                 if (col.InnerText.Trim() != "")
                     result.Add(col.InnerText.Trim());

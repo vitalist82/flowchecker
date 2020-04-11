@@ -1,11 +1,9 @@
-﻿using FlowCheker.Interface;
+﻿using FlowCheker.Event;
+using FlowCheker.Interface;
 using FlowCheker.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FlowCheker.Controller
 {
@@ -54,7 +52,7 @@ namespace FlowCheker.Controller
                 if (i == indexes.Length - 1 || indexes[i + 1] - indexes[i] > 1)
                     return indexes[i] + 1;
 
-            return indexes[i] + 1;
+            return indexes[i-1] + 1;
         }
 
         private void LoadSettings()
@@ -76,6 +74,7 @@ namespace FlowCheker.Controller
         {
             measurementSettings.Entries.Add(new MeasurementSettingsEntry { Id = GetNewId(), Name = "Unknown",
                 Selector = String.Empty, UpdateInterval = 60000, Url = String.Empty, OutputFile = String.Empty });
+            measurementSettings.Entries.Sort();
             form.Settings = measurementSettings;
         }
 

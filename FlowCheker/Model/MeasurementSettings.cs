@@ -4,8 +4,20 @@ namespace FlowCheker.Model
 {
     public class MeasurementSettings
     {
-        public string SettingsFile { get; set; }
-        public List<MeasurementSettingsEntry> Entries { get; set; }
+        private List<MeasurementSettingsEntry> entries;
+
+        public List<MeasurementSettingsEntry> Entries
+        {
+            get
+            {
+                return this.entries;
+            }
+            set
+            {
+                value.Sort();
+                this.entries = value;
+            }
+        }
 
         public MeasurementSettings()
         {}

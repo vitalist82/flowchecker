@@ -70,6 +70,7 @@ namespace FlowCheker.Controller
             var timer = new MeasurementTimer(entry);
             timer.Interval = entry.UpdateInterval;
             timer.Elapsed += Timer_Elapsed;
+            
             idsToTimers[entry.Id] = timer;
             return timer;
         }
@@ -82,8 +83,8 @@ namespace FlowCheker.Controller
 
             try
             {
-                List<dynamic>[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
-                foreach (List<dynamic> line in lines)
+                List<string>[] lines = await downloader.GetLastRows(settingsEntry.Url, settingsEntry.Selector);
+                foreach (List<string> line in lines.OrderBy(item => item[0]).ToList())
                 {
                     Logger.Log(LogLevel.Debug, "Adding line to writer controller.");
                     writerController.AddToQueue(new MeasurementResult(settingsEntry, line, DateTime.Now));

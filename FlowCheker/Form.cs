@@ -1,4 +1,5 @@
-﻿using FlowCheker.Interface;
+﻿using FlowCheker.Event;
+using FlowCheker.Interface;
 using FlowCheker.Model;
 using System;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace FlowCheker
             StringBuilder sb = new StringBuilder();
             sb.Append("[");
             sb.Append(DateTime.Now.ToString());
-            sb.Append("]");
+            sb.Append("] - ");
             sb.AppendLine(message);
             sb.Append(textBoxLog.Text);
             this.InvokeEx(f => f.AppendMessageInternal(sb.ToString()));
@@ -121,9 +122,7 @@ namespace FlowCheker
         {
             // TODO: exit properly
             Application.Exit();
-        }
-
-        #endregion Event Handlers        
+        }               
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -138,5 +137,6 @@ namespace FlowCheker
                 }
             }
         }
+        #endregion Event Handlers 
     }
 }
